@@ -29,3 +29,5 @@ Verify your cryptographic results offline.
 
 ---This is better than most NFT projects. Most just use Math.random() 😂
 Our system is cryptographically provable, blockchain-anchored, and publicly verifiable.
+
+https://terrastake-org.github.io/proof-bundle-verifier-/proof-bundle-verifier.html
