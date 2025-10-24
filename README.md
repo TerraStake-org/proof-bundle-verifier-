@@ -4,7 +4,7 @@ Verify your cryptographic results offline.
 **Proves:** Data hasn't been tampered with (content-addressed)
 
 "⚠️ This is a working demo of our Bitcoin-anchored VRF system. 
-The UI and cloudfare connection is basic because we're focused on the cryptography. 
+The UI and cloudflare connection is basic because we're focused on the cryptography. 
 The verification is production-ready."
 Test it, verify.
 ---
