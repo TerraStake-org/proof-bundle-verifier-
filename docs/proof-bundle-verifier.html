@@ -423,11 +423,13 @@
                     const side = sides[i];
 
                     // Apply domain separation: 0x01 || left || right
+                    // If side='L', sibling is on the LEFT: sibling || current
+                    // If side='R', sibling is on the RIGHT: current || sibling
                     let nodeData;
                     if (side === 'L') {
-                        nodeData = new Uint8Array([0x01, ...currentHash, ...siblingHash]);
-                    } else {
                         nodeData = new Uint8Array([0x01, ...siblingHash, ...currentHash]);
+                    } else {
+                        nodeData = new Uint8Array([0x01, ...currentHash, ...siblingHash]);
                     }
 
                     // SHA-256 hash
