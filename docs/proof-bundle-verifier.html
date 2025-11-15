@@ -204,7 +204,7 @@
 
         .results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: var(--spacing-lg);
             margin-top: var(--spacing-lg);
         }
@@ -232,27 +232,85 @@
         }
 
         .detail-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin: 10px 0;
-            gap: 10px;
+            margin: 12px 0;
+            background: rgba(15, 23, 42, 0.4);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
         }
 
         .detail-label {
             color: var(--text-muted);
             font-weight: 600;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            flex-shrink: 0;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: block;
         }
 
         .detail-value {
             font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            font-size: 0.8rem;
-            word-break: break-all;
-            text-align: right;
+            font-size: 0.85rem;
             color: var(--text-light);
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .detail-value-text {
+            flex: 1;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .detail-value-text:hover {
+            color: var(--primary);
+        }
+
+        .detail-value-text.expanded {
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .copy-btn:hover {
+            background: rgba(99, 102, 241, 0.3);
+            transform: scale(1.05);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .expand-btn {
+            background: rgba(251, 191, 36, 0.2);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: var(--warning);
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-left: 8px;
+        }
+
+        .expand-btn:hover {
+            background: rgba(251, 191, 36, 0.3);
         }
 
         .status-icon {
@@ -459,21 +517,60 @@
             display: inline-block;
         }
 
-        #qrSection {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: var(--spacing-lg);
+        .qr-section {
             background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
             margin: var(--spacing-md) 0;
+            text-align: center;
+        }
+
+        .qr-container {
+            display: inline-block;
+            padding: 15px;
+            background: white;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         #qrCodeCanvas {
-            border: 3px solid var(--primary);
+            display: block;
+        }
+
+        .qr-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 12px 20px;
             border-radius: var(--border-radius);
-            padding: 10px;
-            background: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            animation: slideInRight 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         @keyframes fadeIn {
@@ -547,13 +644,13 @@
             <p>Cryptographically verify FastPath VRF NFT proofs with Bitcoin anchoring</p>
             <div class="tagline">
                 <span>✨</span>
-                <span><strong>Auto-detects format:</strong> Achieve provably fair and secure randomness with VRF-Ed25519. Trust this robust, high-performance cryptographic function to generate unbiased, verifiable random values critical for decentralized consensus, secure lotteries, and robust key generation in your digital world</span>
+                <span><strong>Auto-detects format:</strong> Achieve provably fair and secure randomness with VRF-Ed25519</span>
             </div>
         </div>
         
         <div class="card">
             <h2>📋 Paste Your Generated NFT JSON</h2>
-            <p style="color: var(--text-muted); margin-bottom: 15px;">Copy the raw JSON from <strong>vrf-nft-utxo.html</strong> and paste it below. Anyone can use the public key to check that the random output was calculated correctly  → ProofBundle.</p>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">Copy the raw JSON from <strong>vrf-nft-utxo.html</strong> and paste it below. Anyone can use the public key to verify the random output.</p>
             <textarea id="proofInput" placeholder='Paste your NFT JSON here (from vrf-nft-utxo.html or any ProofBundleV1)...'></textarea>
             <div class="button-group">
                 <button class="btn btn-primary" onclick="verifyProof()">
@@ -573,32 +670,132 @@
             <div class="results-grid">
                 <div class="result-card">
                     <h3><span id="vrfIcon" class="status-icon status-pending">⏳</span> VRF Proof (RFC 9381)</h3>
-                    <div class="detail-row"><span class="detail-label">Method:</span><span class="detail-value" id="vrfMethod">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Public Key:</span><span class="detail-value" id="vrfPubkey">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Output:</span><span class="detail-value" id="vrfOutput">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Proof:</span><span class="detail-value" id="vrfProof">-</span></div>
+                    <div class="detail-row">
+                        <span class="detail-label">Method</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="vrfMethod">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Public Key</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="vrfPubkey" onclick="toggleExpand(this)" data-full="">-</span>
+                            <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.dataset.full, 'Public key')">📋</button>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">VRF Output</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="vrfOutput" onclick="toggleExpand(this)" data-full="">-</span>
+                            <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.dataset.full, 'VRF output')">📋</button>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Proof</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="vrfProof" onclick="toggleExpand(this)" data-full="">-</span>
+                            <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.dataset.full, 'Proof')">📋</button>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="result-card">
                     <h3><span id="bitcoinIcon" class="status-icon status-pending">⏳</span> Bitcoin Temporal Anchor</h3>
-                    <div class="detail-row"><span class="detail-label">TXID:</span><span class="detail-value" id="bitcoinTxid">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Block Height:</span><span class="detail-value" id="bitcoinBlock">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Value:</span><span class="detail-value" id="bitcoinValue">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Spent at Block:</span><span class="detail-value" id="bitcoinSpent">-</span></div>
+                    <div class="detail-row">
+                        <span class="detail-label">Transaction ID</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="bitcoinTxid" onclick="toggleExpand(this)" data-full="">-</span>
+                            <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.dataset.full, 'TXID')">📋</button>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Block Height</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="bitcoinBlock">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Value (BTC)</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="bitcoinValue">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Spent at Block</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="bitcoinSpent">-</span>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="result-card">
                     <h3><span id="merkleIcon" class="status-icon status-pending">⏳</span> Merkle Inclusion Proof</h3>
-                    <div class="detail-row"><span class="detail-label">Leaf Index:</span><span class="detail-value" id="merkleLeafIdx">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Merkle Root:</span><span class="detail-value" id="merkleRoot">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Path Length:</span><span class="detail-value" id="merklePathLen">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Domain Sep:</span><span class="detail-value" id="merkleDomain">0x00 (leaf) / 0x01 (node)</span></div>
+                    <div class="detail-row">
+                        <span class="detail-label">Leaf Index</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="merkleLeafIdx">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Merkle Root</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="merkleRoot" onclick="toggleExpand(this)" data-full="">-</span>
+                            <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.dataset.full, 'Merkle root')">📋</button>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Path Length</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="merklePathLen">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Domain Separation</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" style="font-size: 0.75rem;">0x00 (leaf) / 0x01 (node)</span>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="result-card">
                     <h3><span id="sealIcon" class="status-icon status-pending">⏳</span> Production Seal (Ed25519)</h3>
-                    <div class="detail-row"><span class="detail-label">Algorithm:</span><span class="detail-value" id="sealAlgo">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Public Key:</span><span class="detail-value" id="sealPubkey">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Signature:</span><span class="detail-value" id="sealSig">-</span></div>
-                    <div class="detail-row"><span class="detail-label">Signed At:</span><span class="detail-value" id="sealTime">-</span></div>
+                    <div class="detail-row">
+                        <span class="detail-label">Algorithm</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="sealAlgo">-</span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Public Key</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="sealPubkey" onclick="toggleExpand(this)" data-full="">-</span>
+                            <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.dataset.full, 'Seal public key')">📋</button>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Signature</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="sealSig" onclick="toggleExpand(this)" data-full="">-</span>
+                            <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.dataset.full, 'Signature')">📋</button>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Signed At</span>
+                        <div class="detail-value">
+                            <span class="detail-value-text" id="sealTime">-</span>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            <!-- QR Code Section -->
+            <div id="qrSection" class="qr-section hidden">
+                <h3>📱 Quick Access QR Code</h3>
+                <p class="qr-label">Scan to view transaction on blockchain explorer</p>
+                <div class="qr-container">
+                    <canvas id="qrCodeCanvas"></canvas>
+                </div>
+                <p class="qr-label" id="qrUrl" style="font-family: monospace; font-size: 0.8rem; color: var(--primary);">-</p>
             </div>
 
             <div id="historicSection" class="hidden">
@@ -617,13 +814,6 @@
             <div class="external-links">
                 <h2>🌐 External Verification Links</h2>
                 <div id="externalLinks"></div>
-                <div class="link-card" id="qrSection" style="display: none; flex-direction: column; align-items: center; padding: 25px;">
-                    <div class="link-info" style="text-align: center; margin-bottom: 15px;">
-                        <div class="link-title">📱 Mobile QR Code</div>
-                        <div class="link-description">Scan to view transaction on mobile device</div>
-                    </div>
-                    <canvas id="qrCodeCanvas"></canvas>
-                </div>
             </div>
 
             <div class="export-section" id="exportSection" style="display: none;">
@@ -635,7 +825,7 @@
                 <button class="btn-export secondary" onclick="exportSummary()">
                     <span>📄</span> Download Summary (TXT)
                 </button>
-                <button class="btn-export secondary" onclick="copyToClipboard()">
+                <button class="btn-export secondary" onclick="copyVerificationToClipboard()">
                     <span>📋</span> Copy to Clipboard
                 </button>
             </div>
@@ -644,10 +834,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script>
-        // All original JavaScript logic remains exactly the same
         let proofData = null;
 
-        // Merkle Root Manifest from ipfs/fastpath-merkle-root.json
         const MERKLE_MANIFEST = {
             "manifest_version": "1.0",
             "pool_name": "FastPath Historic UTXO Pool (v2 - 5 UTXOs)",
@@ -671,30 +859,21 @@
             }
         };
 
-        // Actual Merkle Path Verification using Web Crypto API
         async function verifyMerklePath(leaf, path, sides, expectedRoot) {
             try {
                 let currentHash = hexToBytes(leaf);
-
                 for (let i = 0; i < path.length; i++) {
                     const siblingHash = hexToBytes(path[i]);
                     const side = sides[i];
-
-                    // Apply domain separation: 0x01 || left || right
-                    // If side='L', sibling is on the LEFT: sibling || current
-                    // If side='R', sibling is on the RIGHT: current || sibling
                     let nodeData;
                     if (side === 'L') {
                         nodeData = new Uint8Array([0x01, ...siblingHash, ...currentHash]);
                     } else {
                         nodeData = new Uint8Array([0x01, ...currentHash, ...siblingHash]);
                     }
-
-                    // SHA-256 hash
                     const hashBuffer = await crypto.subtle.digest('SHA-256', nodeData);
                     currentHash = new Uint8Array(hashBuffer);
                 }
-
                 const computedRoot = bytesToHex(currentHash);
                 return computedRoot === expectedRoot;
             } catch (e) {
@@ -714,12 +893,70 @@
         function bytesToHex(bytes) {
             return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
         }
+
         const sampleProof = `{"schema_version":"1.0","anchor_version":"temporal_proof_v1","vrf":{"method":"RFC 9381 ECVRF-ED25519-SHA512-TAI","public_key":"2909f6f6dfa87a14cdf85783f8ec09148e08bd89036ee0f54ef9b1ff3ebae43b","output":"b77909ce17b7dccb2ba5f4712a216e3330791da4c5e051f365b1922733839da8053a9a7290731d5d9cfb581f3a1c20d3649d544464e9b26eba44ebea35b4aa34","proof":"13c0795c60076b72511e939ce06923bfb5ed1d794f779e8c7e7851aab9bd4a8c9db634bd44e93c876eb6694c520b328363acff6bfeee076fabf20d0a726e43c53bff080de01db483fe894b6130be7a07","encoding":{"output":"hex","proof":"hex","public_key":"hex"},"message":"fastpath|v1|collection=CryptoKitties|token=1212|trait_cfg_hash=1253c6b421b834a3e67307bb1a656404654d7083469384d8e9a3dbd696b8c2b2"},"utxo":{"txid":"c2bfb6f1bf791308c6b8f73f5d4181be9aa490da6e73c188f9ebd0723e8531b6","vout":0,"block_height":481824,"value":200000,"spent_txid":"31d630fd72fda5a5a0dc8a45aa4952a83548aadbea82804ef2d2160840096916","spent_block_height":481836,"script_pubkey":"76a9145f8c60ce58c1791c2df2040ef8a086e948f2f22588ac"},"merkle_proof":{"leaf":"30e368995e4a20c1dc2172b3a1d16a09dc24ed979d40429fc3e72f067a6de977","leaf_index":4,"path":["30e368995e4a20c1dc2172b3a1d16a09dc24ed979d40429fc3e72f067a6de977","c25ba784480b68afd0432de1f43c341b8790c8c98636f37294acdbf3602dee1c","c35d69e268c5914f568023f83c49c6f746ec959a8aa0bfe0ca6f89d299ba4605"],"root":"c0bf4602062643725c8ada560c71ab6a897bc17abf0ee1d76cd85ab681aafa6e","side":["R","R","L"]},"signature":{"algorithm":"ed25519ph","public_key":"c6dfa1c3179539632cecc4031313b4c2df4e5b9bce59149d1d7b0686d3355937","signature":"3f46362d0e45224fccccf388ab37b29b08dab2c8ff9b87dd917b5200dc427b228c53ed1c473f68a10666131191cb3f8f29406732b696b6f3b1a11237fbb60c0e","signed_at":"2025-10-17T19:52:04Z","signed_data":"vrf_output=b77909ce17b7dccb2ba5f4712a216e3330791da4c5e051f365b1922733839da8053a9a7290731d5d9cfb581f3a1c20d3649d544464e9b26eba44ebea35b4aa34|merkle_root=c0bf4602062643725c8ada560c71ab6a897bc17abf0ee1d76cd85ab681aafa6e|data_hash=7eaf2c4f5a03dcfe81ad0e66a1ebdd3b9d064b0d7a81735efc7aad73df13af74|commitment_hash=ce4f4b8b59d442ca6d69b727e19ae451a5a220185bdfe259ef24d37db5a15327|timestamp=2025-10-17T19:52:04Z","data_hash":"49f70aedd7d05462315d85b50c5f53f199f0bf39726993d3b2028d98233d78febac200c948591d295fb664742d5851e8f916d229c8e145dc245a1ee0a62655f0"},"hashes":{"merkle_root":"c0bf4602062643725c8ada560c71ab6a897bc17abf0ee1d76cd85ab681aafa6e","data_hash":"7eaf2c4f5a03dcfe81ad0e66a1ebdd3b9d064b0d7a81735efc7aad73df13af74","commitment_hash":"ce4f4b8b59d442ca6d69b727e19ae451a5a220185bdfe259ef24d37db5a15327"},"manifest_ref":{"cid":"bafkreiaw5csnjj2tiplhhz72qfq4ab5hlhral3x3iy2k4chk377bmbpivy","root":"c0bf4602062643725c8ada560c71ab6a897bc17abf0ee1d76cd85ab681aafa6e","timestamp":"2025-10-14T13:28:52Z"},"metadata":{"collection_id":"CryptoKitties","token_id":"1212","request_id":"2e059b8d399266e5a90d54746e81753e","timestamp":"2025-10-17T19:52:04Z","trait_cfg_hash":"1253c6b421b834a3e67307bb1a656404654d7083469384d8e9a3dbd696b8c2b2","traits":{"Background":{"value":95,"rarity_pct":95,"tier":"epic"},"Body":{"value":71,"rarity_pct":71,"tier":"common"},"Eyes":{"value":58,"rarity_pct":58,"tier":"common"},"Mouth":{"value":32,"rarity_pct":32,"tier":"common"},"Accessory":{"value":95,"rarity_pct":95,"tier":"epic"}},"historic_metadata":{"rarity_tier":"EPIC","era":"Scaling Era (Block 481,824, September 2017)","significance":"SegWit Activation Era","collector_value":"LEGENDARY - First Bitcoin transaction","story":"A Bitcoin transaction from Block 481,824, mined in September 2017 during the historic Segregated Witness (SegWit) soft fork activation. SegWit solved transaction malleability and enabled the Lightning Network, representing Bitcoin's evolution toward scalability. This UTXO holds 1 BTC (100,000,000 satoshis), worth approximately $4,000-$5,000 at activation time, reflecting Bitcoin's maturation into a multi-billion dollar network. This commemorates one of Bitcoin's most significant protocol upgrades, demonstrating the network's ability to evolve through community consensus while maintaining backward compatibility and ushering in the era of second-layer scaling solutions.","keywords":["SegWit","Lightning Network","Scaling","September 2017","Block 481824","Protocol Upgrade","Soft Fork","1 BTC","$4000+ Value","Layer 2"]}},"merkle_spec":"sha256; leaf=0x00||data; node=0x01||L||R","storage":{"ipfs_cid":"bafkqaigax5daebrginzfzcw2kyghdk3krf54c6v7b3q5o3gylk3idkx2ny","gateways":["https://ipfs.io/ipfs/","https://gateway.pinata.cloud/ipfs/","https://cloudflare-ipfs.com/ipfs/"]}}`;
 
-        function loadSample() { document.getElementById('proofInput').value = JSON.stringify(JSON.parse(sampleProof), null, 2); }
-        function clearAll() { document.getElementById('proofInput').value = ''; document.getElementById('resultsSection').classList.add('hidden'); document.getElementById('parseAlert').classList.add('hidden'); proofData = null; }
-        function showAlert(message, type = 'danger') { const alert = document.getElementById('parseAlert'); alert.className = `alert alert-${type}`; alert.textContent = message; alert.classList.remove('hidden'); }
-        function truncate(str, len = 20) { if (!str) return '-'; return str.length > len ? str.substring(0, len) + '...' : str; }
+        function loadSample() { 
+            document.getElementById('proofInput').value = JSON.stringify(JSON.parse(sampleProof), null, 2); 
+        }
+
+        function clearAll() { 
+            document.getElementById('proofInput').value = ''; 
+            document.getElementById('resultsSection').classList.add('hidden'); 
+            document.getElementById('parseAlert').classList.add('hidden'); 
+            proofData = null; 
+        }
+
+        function showAlert(message, type = 'danger') { 
+            const alert = document.getElementById('parseAlert'); 
+            alert.className = `alert alert-${type}`; 
+            alert.textContent = message; 
+            alert.classList.remove('hidden'); 
+        }
+
+        function truncate(str, len = 24) { 
+            if (!str) return '-'; 
+            return str.length > len ? str.substring(0, len) + '...' : str; 
+        }
+
+        function toggleExpand(element) {
+            const fullText = element.dataset.full;
+            if (!fullText || fullText === '-') return;
+
+            if (element.classList.contains('expanded')) {
+                element.textContent = truncate(fullText);
+                element.classList.remove('expanded');
+            } else {
+                element.textContent = fullText;
+                element.classList.add('expanded');
+            }
+        }
+
+        function copyToClipboard(text, label = 'Text') {
+            if (!text || text === '-') {
+                showToast('❌ No data to copy');
+                return;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`✅ ${label} copied!`);
+            }).catch(() => {
+                showToast(`❌ Copy failed`);
+            });
+        }
+
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 2500);
+        }
+
         function transformToProofBundleV1(rawData) {
             if (rawData.vrf && rawData.utxo && rawData.merkle_proof) return rawData;
             const anchor = rawData.bitcoin_commitment?.anchor || {};
@@ -729,59 +966,155 @@
             const historic = rawData.historic_metadata || rawData.bitcoin_commitment?.historic_metadata || {};
             let merkleProof = null;
             if (anchor.merkle_proof && typeof anchor.merkle_proof === 'string') {
-                try { const decoded = atob(anchor.merkle_proof); merkleProof = JSON.parse(decoded); } catch { }
+                try { 
+                    const decoded = atob(anchor.merkle_proof); 
+                    merkleProof = JSON.parse(decoded); 
+                } catch { }
             }
             return {
                 schema_version: "1.0",
                 anchor_version: "temporal_proof_v1",
-                vrf: { method: vrf.method || "RFC 9381 ECVRF-ED25519-SHA512-TAI", public_key: vrf.public_key || vrf.pubkey || "", output: vrf.output || "", proof: vrf.proof || "", encoding: vrf.encoding || { output: "hex", proof: "hex", public_key: "hex" }, message: vrf.input_msg || vrf.message || "" },
-                utxo: { txid: anchor.bitcoin_txid || rawData.used_utxo?.split(':')[0] || "", vout: anchor.bitcoin_vout !== undefined ? anchor.bitcoin_vout : 0, block_height: anchor.block_height || 0, value: anchor.dead_utxo?.value || 0, spent_txid: anchor.spent_txid || "", spent_block_height: anchor.spent_block_height || 0, script_pubkey: anchor.dead_utxo?.script_pubkey || "" },
-                merkle_proof: merkleProof ? merkleProof : { leaf: "", leaf_index: 0, path: [], root: anchor.merkle_root || "", side: [] },
-                signature: { algorithm: seal.algorithm || "ed25519ph", public_key: seal.public_key || "", signature: seal.signature || "", signed_at: seal.signed_at || "", signed_data: seal.signed_data || "", data_hash: seal.data_hash || "" },
-                hashes: { merkle_root: anchor.merkle_root || rawData.bitcoin_commitment?.verifiable_hashes?.merkle_root || "", data_hash: rawData.bitcoin_commitment?.data_hash || "", commitment_hash: rawData.bitcoin_commitment?.commitment_hash || "" },
-                manifest_ref: { cid: "bafkreiaw5csnjj2tiplhhz72qfq4ab5hlhral3x3iy2k4chk377bmbpivy", root: anchor.merkle_root || "", timestamp: rawData.bitcoin_commitment?.merkle_manifest?.timestamp || "" },
-                metadata: { collection_id: metadata.collection_id || "", token_id: metadata.token_id || "", request_id: metadata.request_id || rawData.request_id || "", timestamp: metadata.timestamp || rawData.timestamp || anchor.anchor_timestamp || "", trait_cfg_hash: metadata.trait_cfg_hash || "", traits: rawData.traits || metadata.traits || {}, historic_metadata: historic || {} },
+                vrf: { 
+                    method: vrf.method || "RFC 9381 ECVRF-ED25519-SHA512-TAI", 
+                    public_key: vrf.public_key || vrf.pubkey || "", 
+                    output: vrf.output || "", 
+                    proof: vrf.proof || "", 
+                    encoding: vrf.encoding || { output: "hex", proof: "hex", public_key: "hex" }, 
+                    message: vrf.input_msg || vrf.message || "" 
+                },
+                utxo: { 
+                    txid: anchor.bitcoin_txid || rawData.used_utxo?.split(':')[0] || "", 
+                    vout: anchor.bitcoin_vout !== undefined ? anchor.bitcoin_vout : 0, 
+                    block_height: anchor.block_height || 0, 
+                    value: anchor.dead_utxo?.value || 0, 
+                    spent_txid: anchor.spent_txid || "", 
+                    spent_block_height: anchor.spent_block_height || 0, 
+                    script_pubkey: anchor.dead_utxo?.script_pubkey || "" 
+                },
+                merkle_proof: merkleProof ? merkleProof : { 
+                    leaf: "", 
+                    leaf_index: 0, 
+                    path: [], 
+                    root: anchor.merkle_root || "", 
+                    side: [] 
+                },
+                signature: { 
+                    algorithm: seal.algorithm || "ed25519ph", 
+                    public_key: seal.public_key || "", 
+                    signature: seal.signature || "", 
+                    signed_at: seal.signed_at || "", 
+                    signed_data: seal.signed_data || "", 
+                    data_hash: seal.data_hash || "" 
+                },
+                hashes: { 
+                    merkle_root: anchor.merkle_root || rawData.bitcoin_commitment?.verifiable_hashes?.merkle_root || "", 
+                    data_hash: rawData.bitcoin_commitment?.data_hash || "", 
+                    commitment_hash: rawData.bitcoin_commitment?.commitment_hash || "" 
+                },
+                manifest_ref: { 
+                    cid: "bafkreiaw5csnjj2tiplhhz72qfq4ab5hlhral3x3iy2k4chk377bmbpivy", 
+                    root: anchor.merkle_root || "", 
+                    timestamp: rawData.bitcoin_commitment?.merkle_manifest?.timestamp || "" 
+                },
+                metadata: { 
+                    collection_id: metadata.collection_id || "", 
+                    token_id: metadata.token_id || "", 
+                    request_id: metadata.request_id || rawData.request_id || "", 
+                    timestamp: metadata.timestamp || rawData.timestamp || anchor.anchor_timestamp || "", 
+                    trait_cfg_hash: metadata.trait_cfg_hash || "", 
+                    traits: rawData.traits || metadata.traits || {}, 
+                    historic_metadata: historic || {} 
+                },
                 merkle_spec: "sha256; leaf=0x00||data; node=0x01||L||R",
-                storage: { ipfs_cid: anchor.storage_url?.split('/ipfs/')[1] || anchor.ipfs_cid || "", gateways: anchor.ipfs_gateways || ["https://ipfs.io/ipfs/", "https://gateway.pinata.cloud/ipfs/", "https://cloudflare-ipfs.com/ipfs/"] }
+                storage: { 
+                    ipfs_cid: anchor.storage_url?.split('/ipfs/')[1] || anchor.ipfs_cid || "", 
+                    gateways: anchor.ipfs_gateways || ["https://ipfs.io/ipfs/", "https://gateway.pinata.cloud/ipfs/", "https://cloudflare-ipfs.com/ipfs/"] 
+                }
             };
         }
+
         function verifyProof() {
             const input = document.getElementById('proofInput').value.trim();
-            if (!input) { showAlert('Please paste a ProofBundle JSON first!', 'warning'); return; }
+            if (!input) { 
+                showAlert('Please paste a ProofBundle JSON first!', 'warning'); 
+                return; 
+            }
             try {
                 const rawData = JSON.parse(input);
                 proofData = transformToProofBundleV1(rawData);
-                if (rawData.bitcoin_commitment && !rawData.merkle_proof) { showAlert('✅ JSON parsed and auto-converted from old format to ProofBundleV1!', 'success'); } else { showAlert('✅ JSON parsed successfully!', 'success'); }
+                if (rawData.bitcoin_commitment && !rawData.merkle_proof) { 
+                    showAlert('✅ JSON parsed and auto-converted from old format to ProofBundleV1!', 'success'); 
+                } else { 
+                    showAlert('✅ JSON parsed successfully!', 'success'); 
+                }
                 displayProofData();
                 runVerification();
-            } catch (e) { showAlert(`❌ Invalid JSON: ${e.message}`, 'danger'); }
+            } catch (e) { 
+                showAlert(`❌ Invalid JSON: ${e.message}`, 'danger'); 
+            }
         }
+
         function displayProofData() {
             document.getElementById('resultsSection').classList.remove('hidden');
+            
             if (proofData.vrf) {
                 document.getElementById('vrfMethod').textContent = proofData.vrf.method || '-';
-                document.getElementById('vrfPubkey').textContent = truncate(proofData.vrf.public_key, 24);
-                document.getElementById('vrfOutput').textContent = truncate(proofData.vrf.output, 24);
-                document.getElementById('vrfProof').textContent = truncate(proofData.vrf.proof, 24);
+                
+                const pubkey = proofData.vrf.public_key || '-';
+                const pubkeyEl = document.getElementById('vrfPubkey');
+                pubkeyEl.textContent = truncate(pubkey);
+                pubkeyEl.dataset.full = pubkey;
+                
+                const output = proofData.vrf.output || '-';
+                const outputEl = document.getElementById('vrfOutput');
+                outputEl.textContent = truncate(output);
+                outputEl.dataset.full = output;
+                
+                const proof = proofData.vrf.proof || '-';
+                const proofEl = document.getElementById('vrfProof');
+                proofEl.textContent = truncate(proof);
+                proofEl.dataset.full = proof;
             }
+            
             if (proofData.utxo) {
-                document.getElementById('bitcoinTxid').textContent = truncate(proofData.utxo.txid, 24);
+                const txid = proofData.utxo.txid || '-';
+                const txidEl = document.getElementById('bitcoinTxid');
+                txidEl.textContent = truncate(txid);
+                txidEl.dataset.full = txid;
+                
                 document.getElementById('bitcoinBlock').textContent = proofData.utxo.block_height || '-';
                 const btc = (proofData.utxo.value / 100000000).toFixed(8);
                 document.getElementById('bitcoinValue').textContent = `${btc} BTC`;
                 document.getElementById('bitcoinSpent').textContent = proofData.utxo.spent_block_height || '-';
             }
+            
             if (proofData.merkle_proof) {
                 document.getElementById('merkleLeafIdx').textContent = proofData.merkle_proof.leaf_index;
-                document.getElementById('merkleRoot').textContent = truncate(proofData.merkle_proof.root, 24);
+                
+                const root = proofData.merkle_proof.root || '-';
+                const rootEl = document.getElementById('merkleRoot');
+                rootEl.textContent = truncate(root);
+                rootEl.dataset.full = root;
+                
                 document.getElementById('merklePathLen').textContent = proofData.merkle_proof.path.length;
             }
+            
             if (proofData.signature) {
                 document.getElementById('sealAlgo').textContent = proofData.signature.algorithm || '-';
-                document.getElementById('sealPubkey').textContent = truncate(proofData.signature.public_key, 24);
-                document.getElementById('sealSig').textContent = truncate(proofData.signature.signature, 24);
+                
+                const sealPubkey = proofData.signature.public_key || '-';
+                const sealPubkeyEl = document.getElementById('sealPubkey');
+                sealPubkeyEl.textContent = truncate(sealPubkey);
+                sealPubkeyEl.dataset.full = sealPubkey;
+                
+                const sig = proofData.signature.signature || '-';
+                const sigEl = document.getElementById('sealSig');
+                sigEl.textContent = truncate(sig);
+                sigEl.dataset.full = sig;
+                
                 document.getElementById('sealTime').textContent = proofData.signature.signed_at || '-';
             }
+            
             if (proofData.metadata && proofData.metadata.historic_metadata) {
                 const historic = proofData.metadata.historic_metadata;
                 document.getElementById('historicSection').classList.remove('hidden');
@@ -790,7 +1123,11 @@
                 const keywordsHtml = (historic.keywords || []).map(k => `<span class="keyword-tag">${k}</span>`).join('');
                 document.getElementById('historicKeywords').innerHTML = keywordsHtml;
             }
+
+            // Generate QR code
+            generateQRCode();
         }
+
         function runVerification() {
             const steps = [
                 { title: 'Parse JSON Structure', description: 'Validate ProofBundleV1 schema and required fields', verify: () => !!(proofData && proofData.vrf && proofData.utxo && proofData.merkle_proof) },
@@ -802,50 +1139,62 @@
                 { title: 'Verify IPFS Manifest CID', description: 'Confirm manifest CID matches expected v1 historic pool', verify: () => (proofData.manifest_ref || {}).cid === 'bafkreiaw5csnjj2tiplhhz72qfq4ab5hlhral3x3iy2k4chk377bmbpivy' },
                 { title: 'Verify All Hashes Match', description: 'Confirm commitment_hash, data_hash, and merkle_root are consistent', verify: () => { const h = (proofData.hashes || {}); return !!(h.commitment_hash && h.data_hash && h.merkle_root); } }
             ];
+            
             const stepsContainer = document.getElementById('verificationSteps');
             stepsContainer.innerHTML = '';
+            
             steps.forEach((step, index) => {
                 setTimeout(() => {
                     const stepDiv = document.createElement('div');
                     stepDiv.className = 'step step-running';
                     stepDiv.innerHTML = `<div class="step-number">${index + 1}</div><div class="step-content"><div class="step-title">${step.title}</div><div class="step-description">${step.description}</div></div><div class="spinner"></div>`;
                     stepsContainer.appendChild(stepDiv);
+                    
                     setTimeout(async () => {
                         const valid = step.isAsync ? await step.verify() : step.verify();
                         stepDiv.className = `step ${valid ? 'step-valid' : 'step-invalid'}`;
                         stepDiv.querySelector('.spinner').textContent = valid ? '✅' : '❌';
-                        if (index === 1) { const el = document.getElementById('vrfIcon'); el.textContent = valid ? '✅' : '❌'; el.className = `status-icon ${valid ? 'status-valid' : 'status-invalid'}`; }
-                        else if (index === 3 || index === 4) { const el = document.getElementById('bitcoinIcon'); el.textContent = valid ? '✅' : '❌'; el.className = `status-icon ${valid ? 'status-valid' : 'status-invalid'}`; }
-                        else if (index === 2) { const el = document.getElementById('merkleIcon'); el.textContent = valid ? '✅' : '❌'; el.className = `status-icon ${valid ? 'status-valid' : 'status-invalid'}`; }
-                        else if (index === 5) { const el = document.getElementById('sealIcon'); el.textContent = valid ? '✅' : '❌'; el.className = `status-icon ${valid ? 'status-valid' : 'status-invalid'}`; }
+                        
+                        if (index === 1) { 
+                            const el = document.getElementById('vrfIcon'); 
+                            el.textContent = valid ? '✅' : '❌'; 
+                            el.className = `status-icon ${valid ? 'status-valid' : 'status-invalid'}`; 
+                        }
+                        else if (index === 3 || index === 4) { 
+                            const el = document.getElementById('bitcoinIcon'); 
+                            el.textContent = valid ? '✅' : '❌'; 
+                            el.className = `status-icon ${valid ? 'status-valid' : 'status-invalid'}`; 
+                        }
+                        else if (index === 2) { 
+                            const el = document.getElementById('merkleIcon'); 
+                            el.textContent = valid ? '✅' : '❌'; 
+                            el.className = `status-icon ${valid ? 'status-valid' : 'status-invalid'}`; 
+                        }
+                        else if (index === 5) { 
+                            const el = document.getElementById('sealIcon'); 
+                            el.textContent = valid ? '✅' : '❌'; 
+                            el.className = `status-icon ${valid ? 'status-valid' : 'status-invalid'}`; 
+                        }
                     }, 500);
                 }, index * 600);
             });
-            setTimeout(() => { addExternalLinks(); }, steps.length * 600 + 1000);
+            
+            setTimeout(() => { 
+                addExternalLinks(); 
+            }, steps.length * 600 + 1000);
         }
-        function addExternalLinks() {
-            const linksContainer = document.getElementById('externalLinks');
-            // Removed the two specified links
-            const links = [
-                { title: '🔗 View Transaction on Blockstream', description: 'Verify Bitcoin transaction on blockchain explorer', url: `https://blockstream.info/tx/${proofData.utxo.txid}` },
-                { title: '🔗 View Transaction on Blockchain.com', description: 'Alternative Bitcoin blockchain explorer', url: `https://www.blockchain.com/explorer/transactions/btc/${proofData.utxo.txid}` },
-                { title: '🔗 View Spending Transaction', description: 'Verify UTXO was spent (temporal proof)', url: `https://blockstream.info/tx/${proofData.utxo.spent_txid}` },
-                { title: '🔗 View IPFS Manifest (IPFS.io)', description: 'Verify historic UTXO pool manifest', url: `https://ipfs.io/ipfs/${proofData.manifest_ref.cid}` }
-            ];
-            linksContainer.innerHTML = links.map(link => `<div class="link-card"><div class="link-info"><div class="link-title">${link.title}</div><div class="link-description">${link.description}</div></div><a href="${link.url}" target="_blank" class="link-button">Open ↗</a></div>`).join('');
-            generateQRCode();
-            document.getElementById('exportSection').style.display = 'block';
-        }
+
         function generateQRCode() {
             const qrSection = document.getElementById('qrSection');
+            
             if (!proofData || !proofData.utxo || !proofData.utxo.txid) {
-                console.log('No UTXO data for QR code');
+                qrSection.classList.add('hidden');
                 return;
             }
 
             if (typeof QRCode === 'undefined') {
                 console.error('QRCode library not loaded');
-                qrSection.style.display = 'none';
+                qrSection.classList.add('hidden');
                 return;
             }
 
@@ -861,16 +1210,30 @@
                 QRCode.toCanvas(canvas, url, { width: 200, margin: 2 }, function (error) {
                     if (error) {
                         console.error('QR code generation failed:', error);
-                        qrSection.style.display = 'none';
+                        qrSection.classList.add('hidden');
                     } else {
-                        qrSection.style.display = 'flex';
+                        qrSection.classList.remove('hidden');
+                        document.getElementById('qrUrl').textContent = url;
                     }
                 });
             } catch (e) {
                 console.error('QR code error:', e);
-                qrSection.style.display = 'none';
+                qrSection.classList.add('hidden');
             }
         }
+
+        function addExternalLinks() {
+            const linksContainer = document.getElementById('externalLinks');
+            const links = [
+                { title: '🔗 View Transaction on Blockstream', description: 'Verify Bitcoin transaction on blockchain explorer', url: `https://blockstream.info/tx/${proofData.utxo.txid}` },
+                { title: '🔗 View Transaction on Blockchain.com', description: 'Alternative Bitcoin blockchain explorer', url: `https://www.blockchain.com/explorer/transactions/btc/${proofData.utxo.txid}` },
+                { title: '🔗 View Spending Transaction', description: 'Verify UTXO was spent (temporal proof)', url: `https://blockstream.info/tx/${proofData.utxo.spent_txid}` },
+                { title: '🔗 View IPFS Manifest (IPFS.io)', description: 'Verify historic UTXO pool manifest', url: `https://ipfs.io/ipfs/${proofData.manifest_ref.cid}` }
+            ];
+            linksContainer.innerHTML = links.map(link => `<div class="link-card"><div class="link-info"><div class="link-title">${link.title}</div><div class="link-description">${link.description}</div></div><a href="${link.url}" target="_blank" class="link-button">Open ↗</a></div>`).join('');
+            document.getElementById('exportSection').style.display = 'block';
+        }
+
         function getVerificationStatus() {
             const steps = [
                 { name: 'JSON Structure', passed: !!(proofData && proofData.vrf && proofData.utxo) },
@@ -884,19 +1247,55 @@
             ];
             return steps;
         }
+
         function exportFullResults() {
-            const results = { export_metadata: { exported_at: new Date().toISOString(), tool: 'FastPath ProofBundle Verifier v1.0', request_id: proofData.metadata.request_id }, verification_status: { all_checks_passed: getVerificationStatus().every(s => s.passed), individual_checks: getVerificationStatus() }, proof_data: proofData, external_verification_urls: { blockstream: `https://blockstream.info/tx/${proofData.utxo.txid}`, blockchain_com: `https://www.blockchain.com/explorer/transactions/btc/${proofData.utxo.txid}`, ipfs_manifest: `https://ipfs.io/ipfs/${proofData.manifest_ref.cid}`, spending_tx: `https://blockstream.info/tx/${proofData.utxo.spent_txid}` } };
+            const results = { 
+                export_metadata: { 
+                    exported_at: new Date().toISOString(), 
+                    tool: 'FastPath ProofBundle Verifier v1.0', 
+                    request_id: proofData.metadata.request_id 
+                }, 
+                verification_status: { 
+                    all_checks_passed: getVerificationStatus().every(s => s.passed), 
+                    individual_checks: getVerificationStatus() 
+                }, 
+                proof_data: proofData, 
+                external_verification_urls: { 
+                    blockstream: `https://blockstream.info/tx/${proofData.utxo.txid}`, 
+                    blockchain_com: `https://www.blockchain.com/explorer/transactions/btc/${proofData.utxo.txid}`, 
+                    ipfs_manifest: `https://ipfs.io/ipfs/${proofData.manifest_ref.cid}`, 
+                    spending_tx: `https://blockstream.info/tx/${proofData.utxo.spent_txid}` 
+                } 
+            };
             const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `verification-report-${proofData.metadata.request_id}.json`; a.click(); URL.revokeObjectURL(url);
+            const url = URL.createObjectURL(blob); 
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = `verification-report-${proofData.metadata.request_id}.json`; 
+            a.click(); 
+            URL.revokeObjectURL(url);
         }
+
         function exportSummary() {
-            const status = getVerificationStatus(); const allPassed = status.every(s => s.passed);
+            const status = getVerificationStatus(); 
+            const allPassed = status.every(s => s.passed);
             const summary = `FASTPATH VERIFICATION REPORT\n\nRequest ID: ${proofData.metadata.request_id}\nCollection: ${proofData.metadata.collection_id}\nToken ID: ${proofData.metadata.token_id}\nTimestamp: ${proofData.metadata.timestamp}\nVerified At: ${new Date().toISOString()}\n\nOverall Status: ${allPassed ? 'ALL CHECKS PASSED' : 'SOME CHECKS FAILED'}\n`;
-            const blob = new Blob([summary], { type: 'text/plain' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `verification-summary-${proofData.metadata.request_id}.txt`; a.click(); URL.revokeObjectURL(url);
+            const blob = new Blob([summary], { type: 'text/plain' }); 
+            const url = URL.createObjectURL(blob); 
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = `verification-summary-${proofData.metadata.request_id}.txt`; 
+            a.click(); 
+            URL.revokeObjectURL(url);
         }
-        function copyToClipboard() {
+
+        function copyVerificationToClipboard() {
             const summary = `✅ FastPath Verification Complete\n\nRequest ID: ${proofData.metadata.request_id}\nCollection: ${proofData.metadata.collection_id}\nToken ID: ${proofData.metadata.token_id}\n\nAll Checks: ${getVerificationStatus().every(s => s.passed) ? '✅ PASSED' : '❌ FAILED'}\n\nBitcoin TX: https://blockstream.info/tx/${proofData.utxo.txid}\nIPFS Manifest: https://ipfs.io/ipfs/${proofData.manifest_ref.cid}\n\nVerified at: ${new Date().toISOString()}`;
-            navigator.clipboard.writeText(summary).then(() => { alert('✅ Verification summary copied to clipboard!'); }).catch(err => { alert('❌ Failed to copy to clipboard: ' + err); });
+            navigator.clipboard.writeText(summary).then(() => { 
+                showToast('✅ Verification summary copied!'); 
+            }).catch(err => { 
+                showToast('❌ Failed to copy'); 
+            });
         }
     </script>
 </body>
