@@ -217,7 +217,8 @@ Attacks That Succeed:
 | IPFS gateway down      | Use redundant gateways |
 
 🌍 Live Demo
-Try it: [https://terrastake-org.github.io/proof-bundle-verifier/](https://terrastake-org.github.io/proof-bundle-verifier/)
+Try it:
+https://terrastake-org.github.io/proof-bundle-verifier-/proof-bundle-verifier.html
 
 📜 License
 MIT License
