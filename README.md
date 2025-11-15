@@ -6,7 +6,7 @@ Stop guessing. Prove your data's integrity instantly with production-grade crypt
 🎯 What Is This?
 ProofBundle Verifier is a client-side cryptographic verification tool that validates VRF-generated NFT traits with Bitcoin blockchain anchoring.
 Zero backend dependency. Zero trust required.
-Try it live: [https://terrastake-org.github.io/proof-bundle-verifier/](https://terrastake-org.github.io/proof-bundle-verifier/)
+Try it live:https://terrastake-org.github.io/proof-bundle-verifier-/proof-bundle-verifier.html
 
 ⚡ Quick Start
 
