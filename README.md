@@ -97,6 +97,7 @@ All checks must pass. One failure = entire proof rejected.
 
 
 The difference? We use cryptography. They use trust.
+
 ┌──────────────────────────────────────────┐
 │ Client-Side Verification (Browser Layer) │
 ├──────────────────────────────────────────┤
