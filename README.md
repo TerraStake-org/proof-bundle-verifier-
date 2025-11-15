@@ -118,22 +118,6 @@ All must pass. One fail = reject.
                  ↓
 ```
 
-┌──────────────────────────────────────────┐
-│ Bitcoin Blockchain (Layer 1 Anchor)      │
-├──────────────────────────────────────────┤
-│ • UTXO-based temporal anchoring          │
-│ • OP_RETURN commitment to Merkle root    │
-│ • 6+ block finality window               │
-└──────────────────────────────────────────┘
-↓
-┌──────────────────────────────────────────┐
-│ IPFS (Distributed Storage Layer)         │
-├──────────────────────────────────────────┤
-│ • Public Merkle Manifest pool            │
-│ • Content-addressed data availability    │
-│ • Multi-gateway redundancy               │
-└──────────────────────────────────────────┘
-
 Backend Required: No
 API Calls: No
 Tracking: No
