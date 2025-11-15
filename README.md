@@ -114,9 +114,7 @@ All must pass. One fail = reject.
 └──────────────────────────────────────────┘
 ```
 
-```
-                 ↓
-```
+
 
 Backend Required: No
 API Calls: No
