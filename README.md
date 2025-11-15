@@ -5,7 +5,8 @@ Stop guessing. Prove your data's integrity instantly with production-grade crypt
 
 
 🎯 What Is This?
-ProofBundle Verifier is a client-side cryptographic verification tool that validates VRF-generated NFT traits with Bitcoin blockchain anchoring. Zero backend dependency. Zero trust required.
+ProofBundle Verifier is a client-side cryptographic verification tool that validates VRF-generated NFT traits with Bitcoin blockchain anchoring. 
+Zero backend dependency. Zero trust required.
 Try it live: https://terrastake-org.github.io/proof-bundle-verifier/
 
 ⚡ Quick Start
@@ -96,30 +97,31 @@ All checks must pass. One failure = entire proof rejected.
 
 
 The difference? We use cryptography. They use trust.
-┌─────────────────────────────────────┐
-│  Client-Side Verification (Browser) │
-├─────────────────────────────────────┤
-│  • VRF Proof Validation (RFC 9381)  │
-│  • Merkle Path Reconstruction       │
-│  • Ed25519 Signature Verification   │
-│  • SHA-256 Hashing (Web Crypto API) │
-└─────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────┐
-│    Bitcoin Blockchain (Layer 1)     │
-├─────────────────────────────────────┤
-│  • UTXO Temporal Anchoring          │
-│  • OP_RETURN Merkle Commitment      │
-│  • 6+ Block Confirmations           │
-└─────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────┐
-│      IPFS (Decentralized Storage)   │
-├─────────────────────────────────────┤
-│  • Merkle Manifest (Public Pool)    │
-│  • Content-Addressed Storage        │
-│  • Gateway Redundancy               │
-└─────────────────────────────────────┘
+┌──────────────────────────────────────────┐
+│ Client-Side Verification (Browser Layer) │
+├──────────────────────────────────────────┤
+│ • RFC 9381 VRF proof checks              │
+│ • Merkle path reconstruction + hashing   │
+│ • Ed25519 signature validation           │
+│ • SHA-256 operations via WebCrypto       │
+└──────────────────────────────────────────┘
+                     ↓
+┌──────────────────────────────────────────┐
+│ Bitcoin Blockchain (Layer 1 Anchor)      │
+├──────────────────────────────────────────┤
+│ • UTXO-based temporal anchoring          │
+│ • OP_RETURN commitment to Merkle root    │
+│ • 6+ block finality window               │
+└──────────────────────────────────────────┘
+                     ↓
+┌──────────────────────────────────────────┐
+│ IPFS (Distributed Storage Layer)         │
+├──────────────────────────────────────────┤
+│ • Public Merkle Manifest pool            │
+│ • Content-addressed data availability    │
+│ • Multi-gateway redundancy               │
+└──────────────────────────────────────────┘
+
 
 Backend Required: No
 API Calls: No
