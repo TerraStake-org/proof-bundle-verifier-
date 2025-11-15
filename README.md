@@ -43,7 +43,8 @@ VRF output → Merkle tree leaf
 Merkle root → Committed to Bitcoin OP_RETURN
 UTXO spent → Temporal proof (existed before block X)
 
-What this means: Your NFT traits existed at a specific moment in Bitcoin history. This cannot be faked or altered. Ever.
+What this means: Your NFT traits existed at a specific moment in Bitcoin history. 
+This cannot be faked or altered. Ever.
 
 3️⃣ Merkle Trees - Efficient Verification
 
@@ -52,8 +53,11 @@ Tamper-Evident        → Change 1 bit → entire root changes
 Fixed Pool            → 5 historic UTXOs (public, immutable)
 
 Merkle Root: c0bf4602062643725c8ada560c71ab6a897bc17abf0ee1d76cd85ab681aafa6e
+
 IPFS CID: bafkreiaw5csnjj2tiplhhz72qfq4ab5hlhral3x3iy2k4chk377bmbpivy
-What this means: You can verify a single NFT's authenticity without downloading the entire dataset. The merkle root acts as a cryptographic fingerprint.
+
+What this means: You can verify a single NFT's authenticity 
+without downloading the entire dataset. The merkle root acts as a cryptographic fingerprint.
 
 4️⃣ Ed25519 Signatures - Production Seal
 
@@ -64,7 +68,8 @@ Fast → <1ms verification in browser
 Algorithm: Ed25519ph (pre-hashed)
 Key Size: 256 bits
 Security: ~128-bit security level
-What this means: Each ProofBundle is cryptographically signed by the issuer. You know exactly who created it and that it hasn't been tampered with.
+What this means: Each ProofBundle is cryptographically signed by the issuer. 
+You know exactly who created it and that it hasn't been tampered with.
 
 📊 Verification Process (8 Checks)
 The verifier executes these checks in sequence:
