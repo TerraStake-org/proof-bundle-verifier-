@@ -106,7 +106,7 @@ function fulfillPayment(bytes32 btcTxid, bytes memory publicKey, bytes memory pr
 
 ### 4.4 The Translation Engine (Round-Trip Integrity)
 
-To enable EVM contracts to interact with Bitcoin, FastPath employs a proprietary **Round-Trip Translation Engine**. This engine maps Bitcoin's UTXO-based state into Account-based EVM primitives without data loss.
+To enable EVM contracts to interact with Bitcoin, FastPath employs a proprietary **Round-Trip Translation Engine**. This engine maps Bitcoin's UTXO-based state into Account-based EVM primitives without data loss. (IP+Patent Pending)
 
 **Real-World Telemetry (Production Environment):**
 The following data demonstrates the system's ability to translate Bitcoin state to EVM standards and back with 100% fidelity:
@@ -172,4 +172,4 @@ FastPath is not just a bridge; it is a **Sovereign Interoperability Layer**. It 
 By removing the need for centralized custodians and oracles, FastPath enables a new generation of **Native Bitcoin DeFi**, **Cross-Chain Gaming**, and **Trustless Commerce**.
 
 ---
-*© 2025 FastPath Protocol. All Rights Reserved.*
+*© 2025 FastPath Protocol. All Rights Reserved.* (Patent Pending)
