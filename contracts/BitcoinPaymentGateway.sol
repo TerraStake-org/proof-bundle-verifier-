@@ -322,6 +322,8 @@ contract BitcoinPaymentGateway {
         PaymentRequest storage req = requests[requestId];
         // slither-disable-next-line timestamp
         require(!req.fulfilled, "Already fulfilled");
+        // slither-disable-next-line timestamp
+        require(block.timestamp > req.timestamp + 24 hours, "Too soon to mark failed");
         
         // Revert tracking
         bytes32 fromHash = keccak256(bytes(req.fromBtcAddress));
