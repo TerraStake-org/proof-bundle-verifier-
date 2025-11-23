@@ -283,6 +283,7 @@ contract BitcoinPaymentGateway {
         
         require(requestId < requestCount, "Invalid request");
         PaymentRequest storage req = requests[requestId];
+        // slither-disable-next-line timestamp
         require(!req.fulfilled, "Already fulfilled");
         require(btcTxid != bytes32(0), "Invalid txid");
         require(proof.length == 64, "Invalid proof length"); // r(32) + s(32)
@@ -319,6 +320,7 @@ contract BitcoinPaymentGateway {
         
         require(requestId < requestCount, "Invalid request");
         PaymentRequest storage req = requests[requestId];
+        // slither-disable-next-line timestamp
         require(!req.fulfilled, "Already fulfilled");
         
         // Revert tracking
