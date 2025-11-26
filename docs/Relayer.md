@@ -1,127 +1,158 @@
 BitcoinPaymentGateway V3: A Non-Custodial, Self-Hosted Framework for Bitcoin-Ethereum Interoperability
+
 Author: Emiliano G. Solazzi
 Date: November 26, 2025
 Version: 1.0
 Abstract
-BitcoinPaymentGateway V3 introduces a revolutionary approach to cross-chain payments between Bitcoin and Ethereum,
-emphasizing user sovereignty, hardware security, and complete non-custodial operation. 
-By leveraging Ethereum smart contracts for immutable audit trails and a self-hosted JavaScript relayer for off-chain Bitcoin transaction management,
-this framework enables users to send real Bitcoin from any controlled address without intermediaries, custodians, or centralized services. 
-Integrated with Ledger hardware wallets and Bitcoin Core nodes, it ensures private keys never leave the user's device while providing cryptographic proofs of transaction validity. This whitepaper details the architecture, security model, implementation, and future roadmap for a truly decentralized payment gateway.
 
+This whitepaper presents BitcoinPaymentGateway V3, a novel architectural framework for secure, non-custodial interoperability between the Bitcoin and Ethereum networks. The system eliminates reliance on trusted intermediaries, custodians, or centralized oracle services by leveraging a hybrid on-chain/off-chain model. Ethereum smart contracts provide an immutable, publicly verifiable audit trail for payment states, while a user-operated, self-hosted JavaScript relayer manages the entire Bitcoin transaction lifecycle. With native integration for hardware wallets (e.g., Ledger) and Bitcoin Core, the framework ensures that Bitcoin private keys never leave the user's secure environment. A core innovation is the generation of cryptographic proofs derived from standard Bitcoin transactions, which are submitted on-chain to verify fulfillmentcryptographically. This design establishes a new paradigm for decentralized cross-chain operations, prioritizing user sovereignty, security, and flexibility.
 1. Introduction
-In the evolving landscape of blockchain technology, interoperability between Bitcoin—the original cryptocurrency focused on security and scarcity—
-and Ethereum—the leading smart contract platform—remains a critical challenge. Traditional bridges often introduce custodial risks,
- centralization points, or complex multi-signature schemes that compromise user control.
-BitcoinPaymentGateway V3 addresses these limitations through a hybrid on-chain/off-chain design:
 
-On-Chain (Ethereum): A verified smart contract records payment requests, tracks totals, and stores fulfillment proofs.
-Off-Chain (Bitcoin): A user-run relayer listens for events, signs transactions via hardware wallet, broadcasts to the Bitcoin network,
-and submits proofs back to Ethereum.
+The blockchain ecosystem is increasingly multi-chain, yet secure communication between these sovereign networks remains a significant challenge. Bitcoin, valued for its unparalleled security and monetary policy, and Ethereum, the leading platform for programmable smart contracts, often operate in isolation. Existing bridges introduce critical trade-offs, including custodial risk, centralization points, and complex trust assumptions that undermine the core tenets of decentralization.
 
-This results in a system where users maintain full control: the relayer runs locally on their computer, supporting multiple wallets
-(Ledger, Bitcoin Core) for diverse use cases like hot/cold storage separation.
-1.1 Problem Statement
-Existing Bitcoin-Ethereum solutions suffer from:
+BitcoinPaymentGateway V3 (BPG V3) proposes a radical alternative: a framework where the user maintains absolute control. By combining the immutable state layer of Ethereum with a self-hosted, off-chain Bitcoin transaction processor, BPG V3 enables users to initiate and prove Bitcoin payments from any address they control, directly in response to on-chain events, without ever ceding custody of their assets.
 
-Custodial Risks: Users must deposit funds into bridge contracts or multisigs.
-Centralization: Reliance on oracle networks or centralized relayers.
-Complexity: Users need to manage wrapped tokens (e.g., WBTC) or atomic swaps.
-Limited Flexibility: Locked to single treasury addresses, ignoring multi-wallet business needs.
-Auditability Gaps: Poor on-chain tracking of off-chain actions.
+1.1. Core Design Philosophy
+The system is architected around two synergistic components:
 
-V3 solves these by making the entire process self-hosted and verifiable.
-1.2 Key Innovations
+    On-Chain (Ethereum): A minimalist, security-focused smart contract acts as a verifiable state machine and registry. It emits events for payment requests and records cryptographic proofs of their fulfillment.
 
-Multi-Wallet Support: Send from any user-controlled Bitcoin address.
-Hardware Security: Ledger integration for signing without exposing keys.
-Cryptographic Proofs: Extract real ECDSA signatures from Bitcoin txs for on-chain emission.
-Self-Hosted Relayer: Node.js script runs locally, configurable via JSON/env.
-Invariant-Tested Contract: 40+ unit tests, fuzzing, and invariants ensure robustness.
+    Off-Chain (Self-Hosted Relayer): A user-operated Node.js service listens for on-chain events, constructs, signs, and broadcasts Bitcoin transactions, and subsequently generates and submits a proof of the completed transaction back to the Ethereum contract.
 
-2. System Architecture
-The framework consists of two main components: the Ethereum smart contract and the JavaScript relayer.
-2.1 Ethereum Smart Contract
-Deployed at 0x46c3ce7b6863f93041265b1642cbd3a81ddc869f (Sepolia Testnet), the contract is written in Solidity 0.8.30 and verified on Etherscan.
-Key Structures and Functions
+This separation of concerns ensures that the Ethereum contract does not hold funds, while the off-chain component has no privileged control over the system's state, only the ability to provide verifiable proofs.
 
-PaymentRequest Struct: Tracks requester, amounts, timestamps, txids, fulfillment status, and addresses.
-sendBitcoin(): Initiates requests, enforces dust limits (546 sats), updates totals, emits events.
-fulfillPayment(): Relayer-only; marks complete, emits proofs (publicKey + r||s signature).
-markPaymentFailed(): Reverts totals on failure (after 24h cooldown).
-Address Registry: Optional tracking of user-controlled BTC addresses.
+1.2. Problem Statement
+Current solutions for Bitcoin-Ethereum interoperability are fraught with limitations:
 
-Events
+    Custodial Risk: Users must deposit Bitcoin into multi-signature wallets or bridge contracts controlled by third parties.
 
-BitcoinPaymentRequested: Triggers relayer action.
-BitcoinPaymentCompleted & BitcoinTransactionProof: Provide verifiable fulfillment.
+    Centralization: Dependence on a small set of oracle nodes or relayers creates single points of failure and censorship.
 
-Security Features
+    Complexity and Friction: Users are forced to interact with wrapped assets (e.g., WBTC) or navigate the technical intricacies of atomic swaps.
 
-Modifiers: onlyOwner, onlyRelayer, onlyAuthorized, whenNotPaused.
-Pausable for emergencies.
-No ETH/BTC storage—pure event emitter.
+    Inflexibility: Most solutions are bound to a single, static Bitcoin treasury address, failing to accommodate multi-wallet business operations or personal finance management.
 
-Test coverage: 100% passing (unit, fuzz, invariants via Foundry).
-2.2 Self-Hosted Relayer (Node.js)
-The relayer script (BITCOIN-PAYMENT-RELAYER.js) runs locally, listening for Ethereum events and handling Bitcoin operations.
-Core Workflow
+    Opacity: A lack of on-chain, cryptographically verifiable proof for off-chain Bitcoin transactions leads to auditability gaps.
 
-Scan Events: Polls Ethereum for BitcoinPaymentRequested (configurable interval, e.g., 10s).
-Validate Request: Check if pending, verify from-address ownership.
-Broadcast BTC Tx:
-Ledger: Prompts hardware signing.
-Bitcoin Core: Uses wallet RPC for UTXO selection.
+BPG V3 is designed to address each of these shortcomings directly.
+2. System Architecture & Technical Specification
 
-Extract Proof: Pulls real signature from BTC tx (DER → raw r||s).
-Fulfill On-Chain: Submits to Ethereum with confirmations wait (configurable mins).
-Error Handling: Orphan recovery, retries, detailed logging.
+2.1. Ethereum Smart Contract: The State Anchor
+The core contract, deployed at 0x46c3ce7b6863f93041265b1642cbd3a81ddc869f on Sepolia Testnet, is written in Solidity 0.8.30 and is fully verified on Etherscan.
 
-Configuration
+    Key Data Structure:
+    struct PaymentRequest {
+    address requester;       // Ethereum address initiating the request
+    uint256 btcAmount;       // Amount in satoshis
+    string btcAddress;       // Destination Bitcoin address
+    uint256 timestamp;
+    bytes32 btcTxId;         // Filled upon fulfillment
+    bool isFulfilled;
+    bool hasFailed;
+}
 
-relayer-config.json or env vars for RPCs, keys, wallets.
-Supports multiple BTC addresses for business use.
+    Core Functions:
 
-Security
+        requestBitcoinPayment(string calldata btcAddress) external payable: Initiates a new payment request. Enforces a dust limit (546 sats) and updates internal tracking totals. Emits a BitcoinPaymentRequested event.
 
-Local-only: No data leaves user's machine.
-Confirmation checks prevent premature fulfillment.
-No private key exposure: Ledger handles signing.
+        fulfillPayment(uint256 requestId, bytes32 btcTxId, bytes calldata signatureProof) external onlyRelayer: Called by the relayer to mark a request as completed. Submits the Bitcoin transaction ID and the cryptographic signature proof. Emits BitcoinPaymentCompleted and BitcoinTransactionProof.
 
-3. Security Model
+        markPaymentFailed(uint256 requestId) external: Allows a requester to revert a stuck payment after a 24-hour cooldown period, protecting against relayer failure.
 
-Non-Custodial: Users control all keys and nodes.
-Hardware Integration: Ledger ensures signing security.
-On-Chain Immutability: Ethereum logs provide tamper-proof audit trail.
-Proof System: ECDSA signatures allow offline verification against BTC blockchain.
-Attack Mitigations:
-Reentrancy: No ETH handling.
-Griefing: Relayer-only fulfillment, 24h failure cooldown.
-Overflows: Tested with fuzzing/invariants.
+    Security Model & Features:
 
-Audits: Internal via 128k invariant runs; recommend external for production.
+        Access Control: Utilizes modifiers like onlyOwner (for admin functions), onlyRelayer (for fulfillment), and whenNotPaused.
 
-4. Use Cases
+        Pausable: Emergency stop mechanism for critical vulnerabilities.
 
-Personal Finance: Track BTC spending on Ethereum.
-Business Payments: Multi-wallet support for accounting.
-DeFi Integration: Trigger BTC sends from smart contracts.
-DAOs: Auditable treasury outflows without custody.
-Cross-Chain Apps: Event-driven BTC movements.
+        Stateless Design: The contract does not custody ETH or BTC; it is a pure logic and verification layer.
 
-5. Implementation and Testing
+        Verification: The submitted signatureProof can be used to cryptographically verify that the signer of the Bitcoin transaction controlled the inputs, linking the off-chain action to the on-chain request.
 
-Contract: 0.8.30 Solidity, event-optimized.
-Relayer: Node.js with Ethers.js + Bitcoin RPC.
-Tests: 40 unit, 8 fuzz (256 runs), 3 invariants (256k calls)—all passed.
+2.2. Self-Hosted Relayer: The Sovereign Bridge
+The relayer (BITCOIN-PAYMENT-RELAYER.js) is a configurable Node.js application that operates entirely on the user's infrastructure.
 
+    Core Workflow:
 
-6. Conclusion
-BitcoinPaymentGateway V3 empowers users with a secure, flexible, and truly decentralized way to bridge Bitcoin and Ethereum.
- By keeping everything self-hosted and non-custodial, it sets a new standard for cross-chain interoperability.
+        Event Polling: Continuously scans the Ethereum blockchain for BitcoinPaymentRequested events at a configurable interval.
+
+        Request Validation: Checks the request's status and, if configured, validates ownership of the from Bitcoin address.
+
+        Transaction Construction & Signing:
+
+            Ledger Path: Communicates directly with the connected Ledger device via the btc-app library. The user must physically confirm the transaction on the device. Private keys never leave the hardware wallet.
+
+            Bitcoin Core Path: Uses the bitcoin-cli RPC interface to leverage the local wallet for UTXO selection and signing.
+
+        Broadcast: Broadcasts the signed raw transaction to the Bitcoin network via a configured node.
+
+        Proof Generation: After a configurable number of confirmations, the relayer extracts the ECDSA signature from the Bitcoin transaction. This signature, originally in DER format, is parsed into its raw r and s components to create the on-chain proof.
+
+        On-Chain Fulfillment: Invokes the fulfillPayment function on the Ethereum contract, supplying the btcTxId and the signatureProof.
+
+    Configuration & Security:
+
+        Configured via relayer-config.json or environment variables, including RPC endpoints, wallet types, and required confirmations.
+
+        Operates locally; no sensitive data (private keys, seed phrases) is transmitted externally.
+
+        Implements robust error handling for network issues, orphaned blocks, and transaction malleability.
+
+3. The Cryptographic Proof System
+
+A pivotal innovation of BPG V3 is its proof mechanism. The system does not require a custom signing scheme; instead, it leverages the inherent properties of standard Bitcoin transactions.
+
+    Signature Extraction: When a Bitcoin transaction is created, it contains digital signatures signing the transaction hash. The relayer parses the transaction to extract this signature from the relevant input.
+
+    DER to Raw Conversion: Bitcoin uses DER-encoded signatures. The relayer decodes this into the raw (r, s) components and the recovery identifier v.
+
+    On-Chain Proof Submission: The (r, s) values are submitted to the Ethereum contract as signatureProof.
+
+    Verification Potential: While the current contract emits this data as a verifiable log, a future upgrade could implement native verification using ecrecover. By knowing the Bitcoin transaction hash (derivable from the on-chain data) and the signature (r, s, v), one can recover the public key that signed it, proving that the payment originated from the expected Bitcoin address.
+
+4. Security Analysis
+
+    Non-Custodial: The fundamental security guarantee. Users never lose control of their Bitcoin.
+
+    Hardware-Wallet Grade Security: Integration with Ledger ensures private keys are generated and used in a secure element, immune to malware on the host computer.
+
+    On-Chain Audit Trail: All payment states and proofs are immutably recorded on Ethereum, enabling complete transparency and auditability.
+
+    Attack Mitigation:
+
+        Reentrancy: Not applicable, as the contract holds no funds.
+
+        Griefing/DDoS: The onlyRelayer modifier and 24-hour failure cooldown prevent spam and griefing.
+
+        Integer Overflows: Protected by Solidity 0.8.x's built-in safe math.
+
+    Tested Rigorously: The smart contract test suite includes 40+ unit tests, 8 fuzz tests (256 runs each), and 3 invariant tests (128k calls), all passing.
+
+5. Use Cases & Applications
+
+    Decentralized Autonomous Organizations (DAOs): Enable DAOs to make transparent, auditable Bitcoin payments from their treasury without relying on a centralized custodian.
+
+    DeFi Cross-Chain Triggers: Smart contracts can trigger real Bitcoin payouts based on on-chain conditions (e.g., options settlements, liquidity provider rewards).
+
+    Business Treasury Management: Companies can manage outflows from multiple, dedicated Bitcoin addresses for accounting and operational purposes, with all activity logged on Ethereum.
+
+    Personal Sovereign Finance: Individuals can track and verify their Bitcoin spending from their own wallets directly on the Ethereum blockchain.
+
+6. Implementation, Testing, and Roadmap
+
+    Implementation: The system is implemented in Solidity 0.8.30 and Node.js (using ethers.js and bitcoin-core RPC libraries).
+
+    Testing: A comprehensive Foundry-based test suite ensures robustness, with 100% pass rates across unit, fuzz, and invariant tests.
+
+    Roadmap: Future work includes formal verification of the core contract, development of a permissionless relayer network with a fee market, and support for Taproot addresses and Schnorr signatures.
+
+7. Conclusion
+
+BitcoinPaymentGateway V3 demonstrates a practical and secure path toward true Bitcoin-Ethereum interoperability. By rejecting the custodial model and placing control entirely in the user's hands, it aligns with the core ethos of cryptocurrency. Its self-hosted architecture, combined with hardware wallet security and a cryptographically verifiable proof system, sets a new standard for building trust-minimized bridges between sovereign blockchains.
 References
 
 Bitcoin BIP-32/44 (HD Wallets)
 Ethereum EIP-1559 (Gas)
 Ledger Developer Docs
 Bitcoin Core RPC Reference
+
