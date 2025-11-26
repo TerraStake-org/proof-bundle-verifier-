@@ -146,9 +146,14 @@ A pivotal innovation of BPG V3 is its proof mechanism. The system does not requi
 
     Roadmap: Future work includes formal verification of the core contract, development of a permissionless relayer network with a fee market, and support for Taproot addresses and Schnorr signatures.
 
-7. Conclusion
 
-BitcoinPaymentGateway V3 demonstrates a practical and secure path toward true Bitcoin-Ethereum interoperability. By rejecting the custodial model and placing control entirely in the user's hands, it aligns with the core ethos of cryptocurrency. Its self-hosted architecture, combined with hardware wallet security and a cryptographically verifiable proof system, sets a new standard for building trust-minimized bridges between sovereign blockchains.
+7. Conclusion
+BitcoinPaymentGateway V3 proves that true Bitcoin-Ethereum interoperability does not require custodians, federations, or complex cryptography.
+By combining Ethereum’s transparent state layer with a fully self-hosted, hardware-secured relayer, it delivers the first practical framework that is simultaneously non-custodial, auditable, and flexible.
+Users finally have a tool that respects Bitcoin’s original promise—no keys, no coins—while leveraging Ethereum’s programmability for accountability.
+The future of cross-chain payments is not wrapped tokens or multisigs.
+It is self-hosted, hardware-signed, cryptographically proven Bitcoin transactions triggered by Ethereum events.
+Welcome to sovereign interoperability.
 References
 
 Bitcoin BIP-32/44 (HD Wallets)
